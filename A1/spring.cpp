@@ -120,7 +120,7 @@ void update_edges(graph &g) {
 }
 
 void output_graph(const graph &g, int i) {
-    std::string file = std::to_string(i);
+    std::string file = std::to_string(i) + ".txt";
     std::ofstream myfile;
     myfile.open(file);
     for (const auto &it : g.get_graph()) {

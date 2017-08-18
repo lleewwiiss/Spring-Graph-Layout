@@ -1,6 +1,3 @@
-import matplotlib.pyplot as plt
-from matplotlib.animation import ArtistAnimation
-import sys
 import sys
 
 import matplotlib.pyplot as plt
