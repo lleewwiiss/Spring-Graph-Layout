@@ -8,8 +8,8 @@
 
 
 float beta = 0.0001;
-float alpha = 1.0;
 int frames = 0;
+int nodes = 0;
 
 struct node {
     double x, y, force;
@@ -53,12 +53,6 @@ public:
         e.distance = sqrt(pow((u.x - v.x), 2) + pow((u.y - v.y), 2));
         e.difference = ((u.x - v.x) + (u.y - v.y))/e.distance;
         graph_container[v].insert(e);
-        edge f{};
-        f.start = v;
-        f.end = u;
-        f.distance = sqrt(pow((v.x - u.x), 2) + pow((v.y - u.y), 2));
-        f.difference = ((v.x - u.x) + (v.y - u.y))/f.distance;
-        graph_container[u].insert(f);
     }
 
     std::map<node, std::set<edge>> get_graph()const {
@@ -80,7 +74,7 @@ void calc_force(graph &g) {
         float hook = 0.0;
         for (auto &it2 : it.second) {
             coulomb += (beta / pow(it2.distance, 2)) * it2.difference;
-            hook += -1 * alpha * (it2.distance - 1.0) * it2.difference;
+            hook += -1.0 * (it2.distance - 1.0) * it2.difference;
         }
         node t = it.first;
         std::set<edge> e = it.second;
@@ -90,13 +84,13 @@ void calc_force(graph &g) {
     g.set_graph(new_map);
 }
 
-bool equilibrium(const graph &g) {
+double equilibrium(const graph &g) {
     std::map<node, std::set<edge>> map = g.get_graph();
-    float force = 0.0;
+    double force = 0.0;
     for (auto it : map) {
         force += fabs(it.first.force);
     }
-    return (force > 0.01);
+    return force;
 }
 
 void move(graph &g) {
@@ -106,8 +100,8 @@ void move(graph &g) {
     for (const auto &it : map) {
         node n{};
         n.id = it.first.id;
-        n.x = it.first.x + 0.01*it.first.force;
-        n.y = it.first.y + 0.01*it.first.force;
+        n.x = it.first.x + 0.001 * it.first.force;
+        n.y = it.first.y + 0.001 * it.first.force;
         new_map[n] = it.second;
     }
     g.set_graph(new_map);
@@ -125,11 +119,25 @@ void update_edges(graph &g) {
     g = g_temp;
 }
 
+void output_graph(const graph &g, int i) {
+    std::string file = std::to_string(i);
+    std::ofstream myfile;
+    myfile.open(file);
+    for (const auto &it : g.get_graph()) {
+        myfile << it.first.x << " " << it.first.y << "\n";
+    }
+    myfile.close();
+}
+
 int balance_graph(graph &g){
-    while (equilibrium(g)) {
-        calc_force(g);
+    int i = 0;
+    //double force = equilibrium(g);
+    while (i < frames) {
         move(g);
         update_edges(g);
+        calc_force(g);
+        //force = equilibrium(g);
+        output_graph(g, i++);
     }
 
     return 0;
@@ -140,7 +148,7 @@ int main(int argc, char **argv) {
     std::string line, file;
     std::string::size_type sz;
 
-    int nodes = 0, i = 0, j = 0;
+    int i = 0, j = 0;
 
     if ((argc <= 1) || (argv[argc - 1] == nullptr) || (argv[argc - 1][0] == '-') || (argc > 2)) {
         std::cerr << "Usage: sprint input_file" << std::endl;
@@ -156,20 +164,13 @@ int main(int argc, char **argv) {
     if (myfile.is_open()) {
         while (getline(myfile, line)) {
             if (i == 0) {
-                std::stringstream parse(line);
-                parse >> j;
-                frames = j;
+                frames = stoi(line);
             } else if (i == 1) {
-                std::stringstream parse(line);
-                parse >> j;
-                nodes = j;
+                nodes = stoi(line);
             } else if (i <= nodes + 1) {
                 node n{};
-                std::stringstream parse(line);
-                parse >> j;
-                n.x = j;
-                parse >> j;
-                n.y = j;
+                n.x = std::stof(line, &sz);
+                n.y = std::stof(line.substr(sz));
                 n.id = i - 2;
                 g.add_node(n);
             } else {
@@ -179,9 +180,13 @@ int main(int argc, char **argv) {
 
                 temp.id = i - nodes - 2;
 
+                auto it = g.get_graph().find(temp);
+                temp = it->first;
                 while (parse >> j) {
                     node temp2{};
                     temp2.id = j;
+                    auto it2 = g.get_graph().find(temp2);
+                    temp2 = it2->first;
                     g.add_edge(temp, temp2);
                 }
             }
@@ -194,7 +199,7 @@ int main(int argc, char **argv) {
         std::cout << "Unable to open file";
     }
 
-    std::cout << "Graph Loaded";
+    calc_force(g);
 
     return balance_graph(g);
 }
