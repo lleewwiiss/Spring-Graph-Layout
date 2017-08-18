@@ -7,7 +7,7 @@
 #include <cmath>
 
 
-float beta = 0.0001;
+double beta = 0.000001;
 int frames = 0;
 int nodes = 0;
 
@@ -70,11 +70,11 @@ void calc_force(graph &g) {
     std::map<node, std::set<edge>> map = g.get_graph();
     std::map<node, std::set<edge>> new_map;
     for (auto it : map) {
-        float coulomb = 0.0;
-        float hook = 0.0;
+        double coulomb = 0.0;
+        double hook = 0.0;
         for (auto &it2 : it.second) {
             coulomb += (beta / pow(it2.distance, 2)) * it2.difference;
-            hook += -1.0 * (it2.distance - 1.0) * it2.difference;
+            hook += -1.0 * (it2.distance - 0.05) * it2.difference;
         }
         node t = it.first;
         std::set<edge> e = it.second;
@@ -100,8 +100,8 @@ void move(graph &g) {
     for (const auto &it : map) {
         node n{};
         n.id = it.first.id;
-        n.x = it.first.x + 0.001 * it.first.force;
-        n.y = it.first.y + 0.001 * it.first.force;
+        n.x = it.first.x + 0.01 * it.first.force;
+        n.y = it.first.y + 0.01 * it.first.force;
         new_map[n] = it.second;
     }
     g.set_graph(new_map);
@@ -136,9 +136,10 @@ int balance_graph(graph &g){
         move(g);
         update_edges(g);
         calc_force(g);
-        //force = equilibrium(g);
         output_graph(g, i++);
+        //force = equilibrium(g);
     }
+
 
     return 0;
 }

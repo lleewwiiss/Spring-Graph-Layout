@@ -21,16 +21,16 @@ with open(center, 'r') as f:
         elif i > nodes + 1:
             break
 
-scat = plt.scatter(*zip(*data), s=100)
+scat = plt.scatter(*zip(*data), s=10)
 images.append([scat])
 
 for i in range(frames):
     data = []
-    with open(str(i), 'r') as f:
+    with open(str(i) + '.txt', 'r') as f:
         for l in f:
             x, y = map(float, l.strip('\n').split(' '))
             data.append([x, y])
-    scat = plt.scatter(*zip(*data), s=100)
+    scat = plt.scatter(*zip(*data), s=10)
     images.append([scat])
 
 line_anim = ArtistAnimation(fig, images, interval=50, blit=True)

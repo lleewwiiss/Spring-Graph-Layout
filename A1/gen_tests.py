@@ -1,14 +1,13 @@
 import random
-import sys
 
-frames = int(sys.argv[1])
-nodes = int(sys.argv[2])
+frames = int(input('Frames:'))
+nodes = int(input('Nodes:'))
 
 with open('test_n' + str(nodes) + '_f' + str(frames), 'w') as f:
     f.write(str(frames) + '\n')
     f.write(str(nodes) + '\n')
     for i in range(nodes):
-        f.write(str(random.uniform(0, 1)) + ' ' + str(random.uniform(0, 1)) + '\n')
+        f.write(str(random.uniform(0, nodes)) + ' ' + str(random.uniform(0, nodes)) + '\n')
     for j in range(nodes):
         a = random.randrange(0, nodes)
         while a == j:
