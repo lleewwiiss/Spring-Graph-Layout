@@ -1,6 +1,6 @@
 # Spring Graph Layout
 A spring graph layout algorithm written in C++ using Hooke's Law and Coloumb's Law to<br>
-model force interactions<br>
+model force interactions, adjust constants in equations for different looking final graphs<br>
 
 ## Spring
 `Usage: spring test_file`<br>
