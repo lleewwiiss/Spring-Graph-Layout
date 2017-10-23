@@ -23,5 +23,5 @@ Takes user input and generates a test files to be used for spring.cpp <br>
 <br>
 
 ### Example output 100 nodes 100 frames 2 edges
-![100 nodes](https://imgur.com/a/apvcH)
+![100 nodes](https://i.imgur.com/dSGJrZT.gif)
 
