@@ -16,7 +16,7 @@ file to visualise how the graph is moved over time<br>
 
 ## Gentest
 `Usage: gentest.py`<br>
-Takes user input and generates a test files to be used for spring.cpp <br>
+Takes user input and randomly generates a test files to be used for spring.cpp <br>
 `Frames:`100<br>
 `Nodes:`100<br>
 `Edges:`2<br>
